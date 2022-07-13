@@ -9,53 +9,70 @@ import java.util.List;
 
 public class Frame {
     Logger logger = LoggerFactory.getLogger(Frame.class);
-    private LinkedList<Throw> throwList;
+    private final int id;
+    private LinkedList<Integer> throwList;
     private Integer numberOfPinsLeft;
     private final boolean isLastFrame;
     private FrameStatus frameStatus;
     private int score;
-    private Frame previousFrame;
 
-    public Frame(Frame previousFrame, boolean isLastFrame) {
-        this(previousFrame.getScore(), previousFrame, isLastFrame);
-    }
-    public Frame() {
-        this(0, null, false);
-    }
-    private Frame(int score, Frame frame, boolean isLastFrame) {
+    private int throwsLeft;
+
+    public Frame(int id, boolean isLastFrame) {
+        this.id = id;
         this.isLastFrame = isLastFrame;
         this.numberOfPinsLeft = 15;
         this.throwList = new LinkedList<>();
-        this.score = score;
-        this.previousFrame = frame;
+        this.score = 0;
+        this.throwsLeft = 3;
         this.frameStatus = FrameStatus.FULL;
+    }
+    public Frame() {
+        this(0,false);
     }
 
     public void updateFrameStatus(int numberOfPinDown) {
-        switch (this.frameStatus) {
-            case FULL:
-                this.frameStatus = numberOfPinDown == 15 ? FrameStatus.STRIKE : FrameStatus.PINS_LEFT;
-                break;
-            case PINS_LEFT:
-                this.frameStatus = numberOfPinDown == this.numberOfPinsLeft ? FrameStatus.SPARE : FrameStatus.PINS_LEFT;
-                break;
-            default:
-                //Nothing yet
-                break;
+        if(FrameStatus.FULL.equals(frameStatus)) {
+            this.frameStatus = numberOfPinDown == 15 ? FrameStatus.STRIKE : FrameStatus.PINS_LEFT;
+        }else if(FrameStatus.PINS_LEFT.equals(frameStatus)) {
+            if( numberOfPinsLeft == 0) {
+                frameStatus = FrameStatus.SPARE;
+            } else if ( throwsLeft == 0) {
+                frameStatus = FrameStatus.NO_MORE_SHOT;
+            }
+        }
+        handleLastFrame();
+    }
+
+    private void handleLastFrame() {
+        if(isLastFrame && (frameStatus.equals(FrameStatus.SPARE) || frameStatus.equals(FrameStatus.STRIKE))) {
+            numberOfPinsLeft = 15;
+            this.throwsLeft = frameStatus.equals(FrameStatus.SPARE) ? 2 : 3;
+            this.frameStatus = FrameStatus.FULL;
         }
     }
 
-    public void updatePinsLeftAndScore(Throw currentThrow) {
-        numberOfPinsLeft -= currentThrow.getNumberOfPinDown();
-        score += currentThrow.getNumberOfPinDown();
+    public void setFrameStatus(FrameStatus frameStatus) {
+        this.frameStatus = frameStatus;
     }
 
-    public List<Throw> getThrowList() {
+    public void updatePinsLeftAndScore(int currentThrow) {
+        this.throwList.add(currentThrow);
+        numberOfPinsLeft -= currentThrow;
+        throwsLeft--;
+        updateScore(currentThrow);
+    }
+
+    public void updateScore(int numberOfPoints) {
+        score += numberOfPoints;
+    }
+
+    public List<Integer> getThrowList() {
         return throwList;
     }
 
-    public boolean isLastThrow() {
-        return !this.isLastFrame && this.throwList.size() == 3;
+    public int getId() {
+        return id;
     }
 
     public Integer getNumberOfPinsLeft() {
@@ -64,5 +81,9 @@ public class Frame {
 
     public int getScore() {
         return score;
+    }
+
+    public FrameStatus getFrameStatus() {
+        return frameStatus;
     }
 }

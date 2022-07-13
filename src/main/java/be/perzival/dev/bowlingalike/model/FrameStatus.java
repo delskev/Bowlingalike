@@ -3,7 +3,17 @@ package be.perzival.dev.bowlingalike.model;
 
 public enum FrameStatus {
     FULL,
-    STRIKE,
+    PINS_LEFT,
     SPARE,
-    PINS_LEFT
+    STRIKE,
+    ENDED,
+    NO_MORE_SHOT;
+
+
+    public static boolean isStrikeOrSpareOrEnded(FrameStatus frameStatus) {
+        return STRIKE.equals(frameStatus) || SPARE.equals(frameStatus) || ENDED.equals(frameStatus);
+    }
+    public static boolean isNotStrikeOrSpareOrEnded(FrameStatus frameStatus) {
+        return !isStrikeOrSpareOrEnded(frameStatus);
+    }
 }
