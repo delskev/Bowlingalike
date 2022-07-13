@@ -76,4 +76,20 @@ class PlayerServiceTest {
         Assertions.assertThat(frameList).hasSize(5);
         Assertions.assertThat(playerService.getFinalScore()).isEqualTo(55);
     }
+
+    @Test
+    void FullGameOnlyStrike() {
+        Integer numberofPins[] = new Integer[]
+                {
+                        15, 15, 15, 15,
+                        15, 15, 15, 15
+                };
+        for (int i = 0; i < numberofPins.length; i++) {
+            playerService.playTurn(numberofPins[i]);
+        }
+
+        List<Frame> frameList = frameService.getFrameList();
+        Assertions.assertThat(frameList).hasSize(5);
+        Assertions.assertThat(playerService.getFinalScore()).isEqualTo(300);
+    }
 }

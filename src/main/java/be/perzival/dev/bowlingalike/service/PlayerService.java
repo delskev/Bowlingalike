@@ -23,6 +23,6 @@ public class PlayerService {
     }
 
     public int getFinalScore() {
-        return frameService.getFrameList().getLast().getScore();
+        return frameService.getFrameList().get(frameService.getFrameList().size() - 1).getScore();
     }
 }

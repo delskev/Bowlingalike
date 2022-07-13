@@ -1,27 +1,25 @@
 package be.perzival.dev.bowlingalike.model;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class Frame {
-    Logger logger = LoggerFactory.getLogger(Frame.class);
+    public static final int MAX_PINS = 15;
     private final int id;
     private LinkedList<Integer> throwList;
     private Integer numberOfPinsLeft;
-    private final boolean isLastFrame;
+    private final boolean lastFrame;
+    private boolean bonusFrame;
     private FrameStatus frameStatus;
     private int score;
-
     private int throwsLeft;
 
-    public Frame(int id, boolean isLastFrame) {
+    public Frame(int id, boolean lastFrame) {
         this.id = id;
-        this.isLastFrame = isLastFrame;
-        this.numberOfPinsLeft = 15;
+        this.lastFrame = lastFrame;
+        this.bonusFrame = false;
+        this.numberOfPinsLeft = MAX_PINS;
         this.throwList = new LinkedList<>();
         this.score = 0;
         this.throwsLeft = 3;
@@ -33,7 +31,7 @@ public class Frame {
 
     public void updateFrameStatus(int numberOfPinDown) {
         if(FrameStatus.FULL.equals(frameStatus)) {
-            this.frameStatus = numberOfPinDown == 15 ? FrameStatus.STRIKE : FrameStatus.PINS_LEFT;
+            this.frameStatus = numberOfPinDown == MAX_PINS ? FrameStatus.STRIKE : FrameStatus.PINS_LEFT;
         }else if(FrameStatus.PINS_LEFT.equals(frameStatus)) {
             if( numberOfPinsLeft == 0) {
                 frameStatus = FrameStatus.SPARE;
@@ -45,10 +43,17 @@ public class Frame {
     }
 
     private void handleLastFrame() {
-        if(isLastFrame && (frameStatus.equals(FrameStatus.SPARE) || frameStatus.equals(FrameStatus.STRIKE))) {
-            numberOfPinsLeft = 15;
-            this.throwsLeft = frameStatus.equals(FrameStatus.SPARE) ? 2 : 3;
+        if( !bonusFrame && lastFrame && (frameStatus.equals(FrameStatus.SPARE) || frameStatus.equals(FrameStatus.STRIKE))) {
+            numberOfPinsLeft = MAX_PINS;
+            this.throwsLeft = frameStatus.equals(FrameStatus.SPARE) ? 2 : 3;//bonus throw
             this.frameStatus = FrameStatus.FULL;
+            this.bonusFrame = true;
+        }
+        if(bonusFrame) {
+            if( numberOfPinsLeft == 0) {
+                numberOfPinsLeft = MAX_PINS;
+            }
+            this.frameStatus = throwsLeft > 0 ? FrameStatus.PINS_LEFT : FrameStatus.NO_MORE_SHOT;
         }
     }
 
