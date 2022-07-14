@@ -24,7 +24,6 @@ public class FrameService {
 
     public Frame addThrow(int currentThrow) {
         Frame currentFrame = getCurrentFrame();
-        logger.info("player throw wood and down {}/{} pin(s)", currentThrow, currentFrame.getNumberOfPinsLeft());
         currentFrame.updatePinsLeftAndScore(currentThrow);
         currentFrame.updateFrameStatus(currentThrow);
 
@@ -49,8 +48,6 @@ public class FrameService {
     public List<Frame> getFrameList() {
         return frameList;
     }
-
-
 
     public void processScore() {
         for (Frame currentFrame : frameList) {

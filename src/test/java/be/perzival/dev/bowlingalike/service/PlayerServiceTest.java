@@ -2,14 +2,11 @@ package be.perzival.dev.bowlingalike.service;
 
 
 import be.perzival.dev.bowlingalike.model.Frame;
-import be.perzival.dev.bowlingalike.model.Game;
-import be.perzival.dev.bowlingalike.model.Throw;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.LinkedList;
 import java.util.List;
 
 

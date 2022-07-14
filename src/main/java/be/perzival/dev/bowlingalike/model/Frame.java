@@ -49,6 +49,10 @@ public class Frame {
             this.frameStatus = FrameStatus.FULL;
             this.bonusFrame = true;
         }
+        handleBonus();
+    }
+
+    private void handleBonus() {
         if(bonusFrame) {
             if( numberOfPinsLeft == 0) {
                 numberOfPinsLeft = MAX_PINS;
@@ -78,10 +82,6 @@ public class Frame {
 
     public int getId() {
         return id;
-    }
-
-    public Integer getNumberOfPinsLeft() {
-        return numberOfPinsLeft;
     }
 
     public int getScore() {
