@@ -1,5 +1,7 @@
 package be.perzival.dev.bowlingalike.service;
 
+import be.perzival.dev.bowlingalike.dto.ScoreBoardDTO;
+import be.perzival.dev.bowlingalike.mapper.ScoreBoardDTOMapper;
 import be.perzival.dev.bowlingalike.model.Frame;
 import be.perzival.dev.bowlingalike.model.FrameStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,10 @@ public class PlayerService {
         if( FrameStatus.NO_MORE_SHOT.equals(currentFrame.getFrameStatus())) {
             frameService.processScore();
         }
+    }
+
+    public ScoreBoardDTO getScore() {
+        return ScoreBoardDTOMapper.toJson(frameService.getFrameList());
     }
 
     public int getFinalScore() {
